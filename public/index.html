@@ -5,21 +5,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WarrantyWallet</title>
     <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/wallet.css" />
     <link rel="stylesheet" href="css/support.css" />
   </head>
   <body>
 
+    <!-- NAVBAR -->
     <nav class="navbar">
-      <div class="nav-brand">WarrantyWallet</div>
+      <div class="nav-brand">🛡️ WarrantyWallet</div>
+      <div class="nav-tabs">
+        <button class="nav-tab active" id="tab-wallet" onclick="App.showSection('wallet')">
+          🧾 My Wallet
+        </button>
+        <button class="nav-tab" id="tab-support" onclick="App.showSection('support')">
+          📚 Support Library
+        </button>
+      </div>
     </nav>
 
-    <section id="support-section">
+    <!-- SANKET'S WALLET SECTION -->
+    <section id="wallet-section">
+
+      <div class="wallet-header">
+        <h2>🧾 Purchase Wallet</h2>
+        <button class="btn-add-wallet" id="btn-add-wallet">+ Add Purchase</button>
+      </div>
+
+      <!-- Stats -->
+      <div class="wallet-stats">
+        <div class="wallet-stat-card total-spent">
+          <span class="stat-number" id="wallet-stat-total">₹0</span>
+          <span class="stat-label">Total Spent</span>
+        </div>
+        <div class="wallet-stat-card total-items">
+          <span class="stat-number" id="wallet-stat-count">0</span>
+          <span class="stat-label">Total Items</span>
+        </div>
+        <div class="wallet-stat-card electronics">
+          <span class="stat-number" id="wallet-stat-electronics">₹0</span>
+          <span class="stat-label">Electronics</span>
+        </div>
+        <div class="wallet-stat-card home">
+          <span class="stat-number" id="wallet-stat-home">₹0</span>
+          <span class="stat-label">Home</span>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="wallet-controls">
+        <input type="text" id="wallet-search-input" placeholder="Search by item or store..." />
+        <select id="wallet-category-filter">
+          <option value="All">All Categories</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Home">Home</option>
+          <option value="Appliances">Appliances</option>
+          <option value="Furniture">Furniture</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <!-- Table -->
+      <div class="wallet-table-wrapper">
+        <table class="wallet-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Store</th>
+              <th>Price</th>
+              <th>Date</th>
+              <th>Category</th>
+              <th>Receipt</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="wallet-tbody">
+            <tr>
+              <td colspan="7" style="text-align:center;padding:40px;color:#a0a0b0;">
+                Loading...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+    <!-- JINAM'S SUPPORT SECTION -->
+    <section id="support-section" class="section-hidden">
 
       <div class="support-header">
-        <h2>Support Library</h2>
+        <h2>📚 Support Library</h2>
         <button class="btn-add-support" id="btn-add-support">+ Add Document</button>
       </div>
 
+      <!-- Stats -->
       <div class="support-stats">
         <div class="stat-card total">
           <span class="stat-number" id="stat-total">0</span>
@@ -39,17 +118,80 @@
         </div>
       </div>
 
+      <!-- Search -->
       <div class="support-search-bar">
         <input type="text" id="support-search-input" placeholder="Search by brand (e.g. Samsung, Sony)..." />
         <button id="support-search-btn">🔍 Search</button>
       </div>
 
+      <!-- Cards Grid -->
       <div class="support-grid" id="support-grid">
         <div class="loading-spinner">Loading...</div>
       </div>
 
     </section>
 
+    <!-- WALLET MODAL -->
+    <div class="wallet-modal-overlay" id="wallet-modal-overlay">
+      <div class="wallet-modal-box">
+        <button class="wallet-modal-close" id="wallet-modal-close">×</button>
+        <h3 id="wallet-modal-title">Add Purchase</h3>
+
+        <form class="wallet-form" id="wallet-form" enctype="multipart/form-data">
+
+          <div class="wallet-form-row">
+            <div class="form-group">
+              <label for="w-itemName">Item Name *</label>
+              <input type="text" id="w-itemName" placeholder="e.g. Samsung 55inch TV" required />
+            </div>
+            <div class="form-group">
+              <label for="w-storeName">Store Name *</label>
+              <input type="text" id="w-storeName" placeholder="e.g. Croma, Amazon" required />
+            </div>
+          </div>
+
+          <div class="wallet-form-row">
+            <div class="form-group">
+              <label for="w-price">Price (₹) *</label>
+              <input type="number" id="w-price" placeholder="e.g. 45000" min="0" step="0.01" required />
+            </div>
+            <div class="form-group">
+              <label for="w-purchaseDate">Purchase Date *</label>
+              <input type="date" id="w-purchaseDate" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="w-category">Category *</label>
+            <select id="w-category" required>
+              <option value="">Select category</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Home">Home</option>
+              <option value="Appliances">Appliances</option>
+              <option value="Furniture">Furniture</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="w-receipt">Upload Receipt (Image/PDF)</label>
+            <input type="file" id="w-receipt" accept=".jpg,.jpeg,.png,.pdf" />
+          </div>
+
+          <div class="form-group">
+            <label for="w-notes">Notes</label>
+            <textarea id="w-notes" placeholder="Any extra info..."></textarea>
+          </div>
+
+          <button type="submit" class="btn-submit-wallet" id="wallet-submit-btn">
+            Save Purchase
+          </button>
+
+        </form>
+      </div>
+    </div>
+
+    <!-- SUPPORT MODAL -->
     <div class="modal-overlay" id="support-modal-overlay">
       <div class="modal-box">
         <button class="modal-close" id="support-modal-close">×</button>
@@ -60,11 +202,11 @@
           <div class="form-row">
             <div class="form-group">
               <label for="s-productName">Product Name *</label>
-              <input type="text" id="s-productName" required />
+              <input type="text" id="s-productName" placeholder="e.g. 55inch Smart TV" required />
             </div>
             <div class="form-group">
               <label for="s-brand">Brand *</label>
-              <input type="text" id="s-brand" required />
+              <input type="text" id="s-brand" placeholder="e.g. Samsung" required />
             </div>
           </div>
 
@@ -76,17 +218,17 @@
           <div class="form-row">
             <div class="form-group">
               <label for="s-supportPhone">Support Phone</label>
-              <input type="text" id="s-supportPhone" />
+              <input type="text" id="s-supportPhone" placeholder="e.g. 1-800-726-7864" />
             </div>
             <div class="form-group">
               <label for="s-supportEmail">Support Email</label>
-              <input type="email" id="s-supportEmail" />
+              <input type="email" id="s-supportEmail" placeholder="support@brand.com" />
             </div>
           </div>
 
           <div class="form-group">
             <label for="s-supportWebsite">Support Website</label>
-            <input type="url" id="s-supportWebsite" />
+            <input type="url" id="s-supportWebsite" placeholder="https://support.samsung.com" />
           </div>
 
           <div class="form-group">
@@ -96,7 +238,7 @@
 
           <div class="form-group">
             <label for="s-notes">Notes</label>
-            <textarea id="s-notes"></textarea>
+            <textarea id="s-notes" placeholder="Any extra info..."></textarea>
           </div>
 
           <button type="submit" class="btn-submit-support" id="support-submit-btn">
@@ -107,9 +249,10 @@
       </div>
     </div>
 
+    <!-- SCRIPTS -->
+    <script src="js/wallet.js"></script>
     <script src="js/support.js"></script>
-    <script>
-      SupportModule.init();
-    </script>
+    <script src="js/app.js"></script>
+
   </body>
 </html>
