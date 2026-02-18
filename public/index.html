@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WarrantyWallet</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/support.css" />
+  </head>
+  <body>
+
+    <nav class="navbar">
+      <div class="nav-brand">WarrantyWallet</div>
+    </nav>
+
+<section id="support-section">
+
+  <div class="support-header">
+    <h2>Support Library</h2>
+    <button class="btn-add-support" id="btn-add-support">+ Add Document</button>
+  </div>
+
+  <div class="support-stats">
+    <div class="stat-card total">
+      <span class="stat-number" id="stat-total">0</span>
+      <span class="stat-label">Total Docs</span>
+    </div>
+    <div class="stat-card active">
+      <span class="stat-number" id="stat-active">0</span>
+      <span class="stat-label">Active</span>
+    </div>
+    <div class="stat-card expired">
+      <span class="stat-number" id="stat-expired">0</span>
+      <span class="stat-label">Expired</span>
+    </div>
+    <div class="stat-card soon">
+      <span class="stat-number" id="stat-soon">0</span>
+      <span class="stat-label">Expiring Soon</span>
+    </div>
+  </div>
+
+</section>
+
+    <script src="js/support.js"></script>
+    <script>
+      SupportModule.init();
+    </script>
+  </body>
+</html>
