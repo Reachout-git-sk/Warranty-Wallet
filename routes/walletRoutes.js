@@ -42,6 +42,22 @@ router.get("/", async (req, res) => {
   }
 });
 
+// GET total spending summary
+router.get("/stats/summary", async (req, res) => {
+  try {
+    const db = await connectDB();
+    const purchases = await db.collection("purchases").find().toArray();
+    const total = purchases.reduce((sum, p) => sum + p.price, 0);
+    const byCategory = purchases.reduce((acc, p) => {
+      acc[p.category] = (acc[p.category] || 0) + p.price;
+      return acc;
+    }, {});
+    res.json({ totalSpent: total.toFixed(2), byCategory, count: purchases.length });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // GET single purchase
 router.get("/:id", async (req, res) => {
   try {
@@ -131,20 +147,6 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-// GET total spending summary
-router.get("/stats/summary", async (req, res) => {
-  try {
-    const db = await connectDB();
-    const purchases = await db.collection("purchases").find().toArray();
-    const total = purchases.reduce((sum, p) => sum + p.price, 0);
-    const byCategory = purchases.reduce((acc, p) => {
-      acc[p.category] = (acc[p.category] || 0) + p.price;
-      return acc;
-    }, {});
-    res.json({ totalSpent: total.toFixed(2), byCategory, count: purchases.length });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+
 
 module.exports = router;
