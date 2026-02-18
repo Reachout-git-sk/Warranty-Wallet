@@ -1,0 +1,28 @@
+{
+  "name": "warranty-wallet",
+  "version": "1.0.0",
+  "description": "A full-stack web app to manage product receipts and warranty documents",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Reachout-git-sk/Warranty-Wallet.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Reachout-git-sk/Warranty-Wallet/issues"
+  },
+  "homepage": "https://github.com/Reachout-git-sk/Warranty-Wallet#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "mongodb": "^7.1.0",
+    "multer": "^2.0.2"
+  }
+}
