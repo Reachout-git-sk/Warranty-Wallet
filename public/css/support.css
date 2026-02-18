@@ -1,127 +1,126 @@
-/* ===== WALLET MODULE STYLES ===== */
+/* ===== SUPPORT LIBRARY STYLES ===== */
 
 :root {
-  --wallet-primary: #00b894;
-  --wallet-primary-dark: #00a381;
-  --wallet-warning: #fdcb6e;
-  --wallet-danger: #e74c3c;
-  --wallet-dark: #1a1a2e;
-  --wallet-card: #16213e;
-  --wallet-input: #0f3460;
-  --wallet-text: #e0e0e0;
-  --wallet-muted: #a0a0b0;
-  --wallet-border: #2a2a4a;
+  --primary: #6c63ff;
+  --primary-dark: #574fd6;
+  --success: #2ecc71;
+  --warning: #f39c12;
+  --danger: #e74c3c;
+  --dark: #1a1a2e;
+  --card-bg: #16213e;
+  --input-bg: #0f3460;
+  --text-light: #e0e0e0;
+  --text-muted: #a0a0b0;
+  --border: #2a2a4a;
 }
 
 /* Container */
-#wallet-section {
+#support-section {
   max-width: 1100px;
   margin: 0 auto;
   padding: 20px;
   font-family: "Segoe UI", sans-serif;
-  color: var(--wallet-text);
+  color: var(--text-light);
 }
 
 /* Header */
-.wallet-header {
+.support-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
   padding-bottom: 15px;
-  border-bottom: 2px solid var(--wallet-border);
+  border-bottom: 2px solid var(--border);
 }
 
-.wallet-header h2 {
+.support-header h2 {
   font-size: 1.8rem;
-  color: var(--wallet-primary);
+  color: var(--primary);
   margin: 0;
 }
 
 /* Stats Bar */
-.wallet-stats {
+.support-stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 15px;
   margin-bottom: 30px;
 }
 
-.wallet-stat-card {
-  background: var(--wallet-card);
-  border: 1px solid var(--wallet-border);
+.stat-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 18px;
   text-align: center;
   transition: transform 0.2s;
 }
 
-.wallet-stat-card:hover {
+.stat-card:hover {
   transform: translateY(-3px);
 }
 
-.wallet-stat-card .stat-number {
+.stat-card .stat-number {
   font-size: 2rem;
   font-weight: 700;
   display: block;
   margin-bottom: 5px;
 }
 
-.wallet-stat-card .stat-label {
+.stat-card .stat-label {
   font-size: 0.8rem;
-  color: var(--wallet-muted);
+  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
-.wallet-stat-card.total-spent .stat-number { color: var(--wallet-primary); }
-.wallet-stat-card.total-items .stat-number { color: #74b9ff; }
-.wallet-stat-card.electronics .stat-number { color: #a29bfe; }
-.wallet-stat-card.home .stat-number { color: var(--wallet-warning); }
+.stat-card.total .stat-number { color: var(--primary); }
+.stat-card.active .stat-number { color: var(--success); }
+.stat-card.expired .stat-number { color: var(--danger); }
+.stat-card.soon .stat-number { color: var(--warning); }
 
-/* Filter and Search Bar */
-.wallet-controls {
+/* Search Bar */
+.support-search-bar {
   display: flex;
   gap: 10px;
   margin-bottom: 25px;
-  flex-wrap: wrap;
 }
 
-.wallet-controls input {
+.support-search-bar input {
   flex: 1;
-  min-width: 200px;
   padding: 12px 16px;
-  background: var(--wallet-input);
-  border: 1px solid var(--wallet-border);
+  background: var(--input-bg);
+  border: 1px solid var(--border);
   border-radius: 8px;
-  color: var(--wallet-text);
+  color: var(--text-light);
   font-size: 0.95rem;
   outline: none;
   transition: border-color 0.2s;
 }
 
-.wallet-controls input:focus {
-  border-color: var(--wallet-primary);
+.support-search-bar input:focus {
+  border-color: var(--primary);
 }
 
-.wallet-controls select {
-  padding: 12px 16px;
-  background: var(--wallet-input);
-  border: 1px solid var(--wallet-border);
+.support-search-bar button {
+  padding: 12px 20px;
+  background: var(--primary);
+  color: white;
+  border: none;
   border-radius: 8px;
-  color: var(--wallet-text);
-  font-size: 0.95rem;
-  outline: none;
   cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.2s;
 }
 
-.wallet-controls select option {
-  background: var(--wallet-input);
+.support-search-bar button:hover {
+  background: var(--primary-dark);
 }
 
 /* Add Button */
-.btn-add-wallet {
+.btn-add-support {
   padding: 12px 24px;
-  background: var(--wallet-primary);
+  background: var(--primary);
   color: white;
   border: none;
   border-radius: 8px;
@@ -129,165 +128,200 @@
   font-size: 0.95rem;
   font-weight: 600;
   transition: background 0.2s, transform 0.2s;
-  white-space: nowrap;
 }
 
-.btn-add-wallet:hover {
-  background: var(--wallet-primary-dark);
+.btn-add-support:hover {
+  background: var(--primary-dark);
   transform: translateY(-1px);
 }
 
-/* Purchases Table */
-.wallet-table-wrapper {
-  background: var(--wallet-card);
-  border: 1px solid var(--wallet-border);
+/* Support Cards Grid */
+.support-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* Individual Support Card */
+.support-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
   border-radius: 14px;
+  padding: 20px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
   overflow: hidden;
 }
 
-.wallet-table {
-  width: 100%;
-  border-collapse: collapse;
+.support-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(108, 99, 255, 0.2);
 }
 
-.wallet-table thead {
-  background: var(--wallet-input);
+.support-card .card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
 }
 
-.wallet-table th {
-  padding: 14px 16px;
-  text-align: left;
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--wallet-muted);
-  font-weight: 600;
+.support-card .product-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
 }
 
-.wallet-table td {
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--wallet-border);
-  font-size: 0.9rem;
-  vertical-align: middle;
+.support-card .brand-name {
+  font-size: 0.85rem;
+  color: var(--primary);
+  margin: 3px 0 0 0;
 }
 
-.wallet-table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-.wallet-table tbody tr:hover {
-  background: rgba(0, 184, 148, 0.05);
-}
-
-/* Category Badge */
-.category-badge {
-  padding: 4px 10px;
+/* Status Badge */
+.status-badge {
+  padding: 4px 12px;
   border-radius: 20px;
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.active {
+  background: rgba(46, 204, 113, 0.15);
+  color: var(--success);
+  border: 1px solid var(--success);
+}
+
+.status-badge.expired {
+  background: rgba(231, 76, 60, 0.15);
+  color: var(--danger);
+  border: 1px solid var(--danger);
+}
+
+.status-badge.expiring-soon {
+  background: rgba(243, 156, 18, 0.15);
+  color: var(--warning);
+  border: 1px solid var(--warning);
+}
+
+/* Warranty Countdown */
+.warranty-countdown {
+  background: var(--input-bg);
+  border-radius: 10px;
+  padding: 12px;
+  margin: 12px 0;
+  text-align: center;
+}
+
+.warranty-countdown .days-number {
+  font-size: 1.8rem;
+  font-weight: 800;
+  display: block;
+}
+
+.warranty-countdown .days-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
   text-transform: uppercase;
 }
 
-.category-badge.electronics {
-  background: rgba(162, 155, 254, 0.15);
-  color: #a29bfe;
-  border: 1px solid #a29bfe;
+.warranty-countdown.active .days-number { color: var(--success); }
+.warranty-countdown.expired .days-number { color: var(--danger); }
+.warranty-countdown.soon .days-number { color: var(--warning); }
+
+/* Contact Info */
+.contact-info {
+  margin: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.category-badge.home {
-  background: rgba(253, 203, 110, 0.15);
-  color: var(--wallet-warning);
-  border: 1px solid var(--wallet-warning);
+.contact-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
 }
 
-.category-badge.appliances {
-  background: rgba(116, 185, 255, 0.15);
-  color: #74b9ff;
-  border: 1px solid #74b9ff;
+.contact-row span.icon {
+  font-size: 1rem;
 }
 
-.category-badge.furniture {
-  background: rgba(0, 184, 148, 0.15);
-  color: var(--wallet-primary);
-  border: 1px solid var(--wallet-primary);
+.contact-row a {
+  color: var(--primary);
+  text-decoration: none;
 }
 
-.category-badge.other {
-  background: rgba(160, 160, 176, 0.15);
-  color: var(--wallet-muted);
-  border: 1px solid var(--wallet-muted);
+.contact-row a:hover {
+  text-decoration: underline;
 }
 
-/* Price */
-.price-text {
-  color: var(--wallet-primary);
-  font-weight: 700;
-  font-size: 0.95rem;
+/* Card Actions */
+.card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid var(--border);
 }
 
-/* Receipt thumbnail */
-.receipt-thumb {
-  width: 36px;
-  height: 36px;
-  object-fit: cover;
-  border-radius: 6px;
-  border: 1px solid var(--wallet-border);
-  cursor: pointer;
-}
-
-.no-receipt {
-  color: var(--wallet-muted);
-  font-size: 0.8rem;
-}
-
-/* Action buttons in table */
-.tbl-btn-edit {
-  padding: 6px 12px;
-  background: rgba(253, 203, 110, 0.15);
-  color: var(--wallet-warning);
-  border: 1px solid var(--wallet-warning);
+.btn-view-manual {
+  flex: 1;
+  padding: 8px;
+  background: rgba(108, 99, 255, 0.15);
+  color: var(--primary);
+  border: 1px solid var(--primary);
   border-radius: 6px;
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   transition: all 0.2s;
-  margin-right: 4px;
+  text-align: center;
+  text-decoration: none;
 }
 
-.tbl-btn-edit:hover {
-  background: var(--wallet-warning);
-  color: #1a1a2e;
-}
-
-.tbl-btn-delete {
-  padding: 6px 12px;
-  background: rgba(231, 76, 60, 0.15);
-  color: var(--wallet-danger);
-  border: 1px solid var(--wallet-danger);
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.8rem;
-  transition: all 0.2s;
-}
-
-.tbl-btn-delete:hover {
-  background: var(--wallet-danger);
+.btn-view-manual:hover {
+  background: var(--primary);
   color: white;
 }
 
-/* Empty state */
-.wallet-empty {
-  text-align: center;
-  padding: 60px 20px;
-  color: var(--wallet-muted);
+.btn-edit-support {
+  padding: 8px 14px;
+  background: rgba(243, 156, 18, 0.15);
+  color: var(--warning);
+  border: 1px solid var(--warning);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
 }
 
-.wallet-empty .empty-icon {
-  font-size: 3rem;
-  margin-bottom: 15px;
+.btn-edit-support:hover {
+  background: var(--warning);
+  color: white;
 }
 
-/* Modal */
-.wallet-modal-overlay {
+.btn-delete-support {
+  padding: 8px 14px;
+  background: rgba(231, 76, 60, 0.15);
+  color: var(--danger);
+  border: 1px solid var(--danger);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.btn-delete-support:hover {
+  background: var(--danger);
+  color: white;
+}
+
+/* Modal Overlay */
+.modal-overlay {
   display: none;
   position: fixed;
   top: 0; left: 0;
@@ -298,13 +332,14 @@
   align-items: center;
 }
 
-.wallet-modal-overlay.active {
+.modal-overlay.active {
   display: flex;
 }
 
-.wallet-modal-box {
-  background: var(--wallet-card);
-  border: 1px solid var(--wallet-border);
+/* Modal Box */
+.modal-box {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
   border-radius: 16px;
   padding: 30px;
   width: 100%;
@@ -314,79 +349,77 @@
   position: relative;
 }
 
-.wallet-modal-box h3 {
+.modal-box h3 {
   margin: 0 0 20px 0;
   font-size: 1.3rem;
-  color: var(--wallet-primary);
+  color: var(--primary);
 }
 
-.wallet-modal-close {
+.modal-close {
   position: absolute;
   top: 15px; right: 20px;
   background: none;
   border: none;
-  color: var(--wallet-muted);
+  color: var(--text-muted);
   font-size: 1.5rem;
   cursor: pointer;
+  line-height: 1;
 }
 
-.wallet-modal-close:hover {
-  color: var(--wallet-danger);
+.modal-close:hover {
+  color: var(--danger);
 }
 
-/* Form */
-.wallet-form .form-group {
+/* Form Styles */
+.support-form .form-group {
   margin-bottom: 16px;
 }
 
-.wallet-form label {
+.support-form label {
   display: block;
   margin-bottom: 6px;
   font-size: 0.85rem;
-  color: var(--wallet-muted);
+  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-.wallet-form input,
-.wallet-form select,
-.wallet-form textarea {
+.support-form input,
+.support-form select,
+.support-form textarea {
   width: 100%;
   padding: 10px 14px;
-  background: var(--wallet-input);
-  border: 1px solid var(--wallet-border);
+  background: var(--input-bg);
+  border: 1px solid var(--border);
   border-radius: 8px;
-  color: var(--wallet-text);
+  color: var(--text-light);
   font-size: 0.95rem;
   outline: none;
   transition: border-color 0.2s;
   box-sizing: border-box;
 }
 
-.wallet-form input:focus,
-.wallet-form textarea:focus {
-  border-color: var(--wallet-primary);
+.support-form input:focus,
+.support-form select,
+.support-form textarea:focus {
+  border-color: var(--primary);
 }
 
-.wallet-form select option {
-  background: var(--wallet-input);
-}
-
-.wallet-form textarea {
+.support-form textarea {
   resize: vertical;
   min-height: 80px;
 }
 
-.wallet-form-row {
+.form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
 
-.btn-submit-wallet {
+.btn-submit-support {
   width: 100%;
   padding: 12px;
-  background: var(--wallet-primary);
+  background: var(--primary);
   color: white;
   border: none;
   border-radius: 8px;
@@ -397,28 +430,53 @@
   transition: background 0.2s;
 }
 
-.btn-submit-wallet:hover {
-  background: var(--wallet-primary-dark);
+.btn-submit-support:hover {
+  background: var(--primary-dark);
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-muted);
+  grid-column: 1 / -1;
+}
+
+.empty-state .empty-icon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+}
+
+.empty-state p {
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Loading */
+.loading-spinner {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-muted);
+  grid-column: 1 / -1;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .wallet-stats {
+  .support-stats {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .wallet-header {
+  .support-header {
     flex-direction: column;
     gap: 12px;
     align-items: flex-start;
   }
 
-  .wallet-form-row {
+  .form-row {
     grid-template-columns: 1fr;
   }
 
-  .wallet-table th:nth-child(4),
-  .wallet-table td:nth-child(4) {
-    display: none;
+  .support-grid {
+    grid-template-columns: 1fr;
   }
 }
