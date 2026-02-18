@@ -42,6 +42,40 @@ router.get("/", async (req, res) => {
   }
 });
 
+// GET warranty status summary
+router.get("/stats/summary", async (req, res) => {
+  try {
+    const db = await connectDB();
+    const docs = await db.collection("support_docs").find().toArray();
+    const today = new Date();
+
+    const active = docs.filter((d) => new Date(d.warrantyExpiry) > today).length;
+    const expired = docs.filter((d) => new Date(d.warrantyExpiry) <= today).length;
+    const expiringSoon = docs.filter((d) => {
+      const days = Math.ceil((new Date(d.warrantyExpiry) - today) / (1000 * 60 * 60 * 24));
+      return days > 0 && days <= 30;
+    }).length;
+
+    res.json({ total: docs.length, active, expired, expiringSoon });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET search by brand
+router.get("/search/:brand", async (req, res) => {
+  try {
+    const db = await connectDB();
+    const docs = await db
+      .collection("support_docs")
+      .find({ brand: { $regex: req.params.brand, $options: "i" } })
+      .toArray();
+    res.json(docs);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // GET single support doc
 router.get("/:id", async (req, res) => {
   try {
@@ -154,40 +188,6 @@ router.delete("/:id", async (req, res) => {
     if (result.deletedCount === 0)
       return res.status(404).json({ error: "Not found" });
     res.json({ message: "Support doc deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// GET warranty status summary
-router.get("/stats/summary", async (req, res) => {
-  try {
-    const db = await connectDB();
-    const docs = await db.collection("support_docs").find().toArray();
-    const today = new Date();
-
-    const active = docs.filter((d) => new Date(d.warrantyExpiry) > today).length;
-    const expired = docs.filter((d) => new Date(d.warrantyExpiry) <= today).length;
-    const expiringSoon = docs.filter((d) => {
-      const days = Math.ceil((new Date(d.warrantyExpiry) - today) / (1000 * 60 * 60 * 24));
-      return days > 0 && days <= 30;
-    }).length;
-
-    res.json({ total: docs.length, active, expired, expiringSoon });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// GET search by brand
-router.get("/search/:brand", async (req, res) => {
-  try {
-    const db = await connectDB();
-    const docs = await db
-      .collection("support_docs")
-      .find({ brand: { $regex: req.params.brand, $options: "i" } })
-      .toArray();
-    res.json(docs);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
