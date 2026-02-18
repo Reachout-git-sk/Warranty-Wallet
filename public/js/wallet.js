@@ -1,4 +1,4 @@
-// ===== SANKET'S WALLET MODULE =====
+// ===== WALLET MODULE =====
 
 const WalletModule = (() => {
   const API = "/api/purchases";
@@ -47,13 +47,13 @@ const WalletModule = (() => {
       const res = await fetch(`${API}/stats/summary`);
       const data = await res.json();
       document.getElementById("wallet-stat-total").textContent =
-        "₹" + Number(data.totalSpent || 0).toLocaleString("en-IN");
+        "$" + Number(data.totalSpent || 0).toLocaleString("en-IN");
       document.getElementById("wallet-stat-count").textContent =
         data.count || 0;
       document.getElementById("wallet-stat-electronics").textContent =
-        "₹" + Number(data.byCategory?.Electronics || 0).toLocaleString("en-IN");
+        "$" + Number(data.byCategory?.Electronics || 0).toLocaleString("en-IN");
       document.getElementById("wallet-stat-home").textContent =
-        "₹" + Number(data.byCategory?.Home || 0).toLocaleString("en-IN");
+        "$" + Number(data.byCategory?.Home || 0).toLocaleString("en-IN");
     } catch (err) {
       console.error("Wallet stats error:", err);
     }
@@ -119,7 +119,7 @@ const WalletModule = (() => {
       row.innerHTML = `
         <td><strong>${escapeHtml(p.itemName)}</strong></td>
         <td>${escapeHtml(p.storeName)}</td>
-        <td class="price-text">₹${Number(p.price).toLocaleString("en-IN")}</td>
+        <td class="price-text">$${Number(p.price).toLocaleString("en-IN")}</td>
         <td>${date}</td>
         <td><span class="category-badge ${p.category.toLowerCase()}">${escapeHtml(p.category)}</span></td>
         <td>
