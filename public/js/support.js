@@ -1,4 +1,4 @@
-// ===== SUPPORT LIBRARY MODULE =====
+// ===== WARRANTY VAULT MODULE =====
 
 const SupportModule = (() => {
   const API = "/api/support";

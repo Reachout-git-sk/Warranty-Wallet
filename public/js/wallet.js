@@ -1,4 +1,4 @@
-// ===== SANKET'S WALLET MODULE =====
+// ===== WALLET MODULE =====
 
 const WalletModule = (() => {
   const API = "/api/purchases";
@@ -47,13 +47,13 @@ const WalletModule = (() => {
       const res = await fetch(`${API}/stats/summary`);
       const data = await res.json();
       document.getElementById("wallet-stat-total").textContent =
-        "₹" + Number(data.totalSpent || 0).toLocaleString("en-IN");
+        "$" + Number(data.totalSpent || 0).toLocaleString("en-IN");
       document.getElementById("wallet-stat-count").textContent =
         data.count || 0;
       document.getElementById("wallet-stat-electronics").textContent =
-        "₹" + Number(data.byCategory?.Electronics || 0).toLocaleString("en-IN");
+        "$" + Number(data.byCategory?.Electronics || 0).toLocaleString("en-IN");
       document.getElementById("wallet-stat-home").textContent =
-        "₹" + Number(data.byCategory?.Home || 0).toLocaleString("en-IN");
+        "$" + Number(data.byCategory?.Home || 0).toLocaleString("en-IN");
     } catch (err) {
       console.error("Wallet stats error:", err);
     }
@@ -119,7 +119,7 @@ const WalletModule = (() => {
       row.innerHTML = `
         <td><strong>${escapeHtml(p.itemName)}</strong></td>
         <td>${escapeHtml(p.storeName)}</td>
-        <td class="price-text">₹${Number(p.price).toLocaleString("en-IN")}</td>
+        <td class="price-text">$${Number(p.price).toLocaleString("en-IN")}</td>
         <td>${date}</td>
         <td><span class="category-badge ${p.category.toLowerCase()}">${escapeHtml(p.category)}</span></td>
         <td>
@@ -178,43 +178,70 @@ const WalletModule = (() => {
   }
 
   // ---- HANDLE SUBMIT ----
-  async function handleSubmit(e) {
-    e.preventDefault();
+async function handleSubmit(e) {
+  e.preventDefault();
 
-    const formData = new FormData();
-    formData.append("itemName", document.getElementById("w-itemName").value.trim());
-    formData.append("storeName", document.getElementById("w-storeName").value.trim());
-    formData.append("price", document.getElementById("w-price").value);
-    formData.append("purchaseDate", document.getElementById("w-purchaseDate").value);
-    formData.append("category", document.getElementById("w-category").value);
-    formData.append("notes", document.getElementById("w-notes").value.trim());
+  const itemName = document.getElementById("w-itemName").value.trim();
+  const storeName = document.getElementById("w-storeName").value.trim();
+  const price = document.getElementById("w-price").value;
+  const purchaseDate = document.getElementById("w-purchaseDate").value;
+  const category = document.getElementById("w-category").value;
+  const notes = document.getElementById("w-notes").value.trim();
+  const receiptFile = document.getElementById("w-receipt").files[0];
 
-    const receiptFile = document.getElementById("w-receipt").files[0];
-    if (receiptFile) formData.append("receipt", receiptFile);
+  if (!itemName || !storeName || !price || !purchaseDate || !category) {
+    alert("Please fill all required fields.");
+    return;
+  }
 
-    const btn = document.getElementById("wallet-submit-btn");
-    btn.textContent = "Saving...";
-    btn.disabled = true;
+  const btn = document.getElementById("wallet-submit-btn");
+  btn.textContent = "Saving...";
+  btn.disabled = true;
 
-    try {
+  try {
+    let res, data;
+
+    if (receiptFile) {
+      // Send as FormData when file is attached
+      const formData = new FormData();
+      formData.append("itemName", itemName);
+      formData.append("storeName", storeName);
+      formData.append("price", price);
+      formData.append("purchaseDate", purchaseDate);
+      formData.append("category", category);
+      formData.append("notes", notes);
+      formData.append("receipt", receiptFile);
+
       const url = editingId ? `${API}/${editingId}` : API;
       const method = editingId ? "PUT" : "POST";
-
-      const res = await fetch(url, { method, body: formData });
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error || "Something went wrong");
-
-      closeModal();
-      loadPurchases();
-      loadStats();
-    } catch (err) {
-      alert("Error: " + err.message);
-    } finally {
-      btn.textContent = "Save Purchase";
-      btn.disabled = false;
+      res = await fetch(url, { method, body: formData });
+    } else {
+      // Send as JSON when no file
+      const url = editingId ? `${API}/${editingId}` : API;
+      const method = editingId ? "PUT" : "POST";
+      res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          itemName, storeName, price,
+          purchaseDate, category, notes
+        }),
+      });
     }
+
+    data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Something went wrong");
+
+    closeModal();
+    loadPurchases();
+    loadStats();
+  } catch (err) {
+    alert("Error: " + err.message);
+  } finally {
+    btn.textContent = "Save Purchase";
+    btn.disabled = false;
   }
+}
 
   // ---- DELETE ----
   async function deletePurchase(id) {

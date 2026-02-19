@@ -3,14 +3,15 @@ const router = express.Router();
 const { ObjectId } = require("mongodb");
 const connectDB = require("../db/connect");
 const { uploadReceipt } = require("../db/cloudinary");
+const { verifyToken } = require("../middleware/auth");
 
-// GET all purchases
-router.get("/", async (req, res) => {
+// GET all purchases (current user only)
+router.get("/", verifyToken, async (req, res) => {
   try {
     const db = await connectDB();
     const purchases = await db
       .collection("purchases")
-      .find()
+      .find({ userId: req.user.id })
       .sort({ createdAt: -1 })
       .toArray();
     res.json(purchases);
@@ -19,33 +20,32 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET stats summary — MUST be before /:id
-router.get("/stats/summary", async (req, res) => {
+// GET stats summary (current user only)
+router.get("/stats/summary", verifyToken, async (req, res) => {
   try {
     const db = await connectDB();
-    const purchases = await db.collection("purchases").find().toArray();
+    const purchases = await db
+      .collection("purchases")
+      .find({ userId: req.user.id })
+      .toArray();
     const total = purchases.reduce((sum, p) => sum + p.price, 0);
     const byCategory = purchases.reduce((acc, p) => {
       acc[p.category] = (acc[p.category] || 0) + p.price;
       return acc;
     }, {});
-    res.json({
-      totalSpent: total.toFixed(2),
-      byCategory,
-      count: purchases.length,
-    });
+    res.json({ totalSpent: total.toFixed(2), byCategory, count: purchases.length });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
 // GET single purchase
-router.get("/:id", async (req, res) => {
+router.get("/:id", verifyToken, async (req, res) => {
   try {
     const db = await connectDB();
     const purchase = await db
       .collection("purchases")
-      .findOne({ _id: new ObjectId(req.params.id) });
+      .findOne({ _id: new ObjectId(req.params.id), userId: req.user.id });
     if (!purchase) return res.status(404).json({ error: "Not found" });
     res.json(purchase);
   } catch (err) {
@@ -54,19 +54,17 @@ router.get("/:id", async (req, res) => {
 });
 
 // POST create purchase
-router.post("/", uploadReceipt.single("receipt"), async (req, res) => {
+router.post("/", verifyToken, uploadReceipt.single("receipt"), async (req, res) => {
   try {
-    const { itemName, storeName, price, purchaseDate, category, notes } =
-      req.body;
+    const { itemName, storeName, price, purchaseDate, category, notes } = req.body;
 
     if (!itemName || !storeName || !price || !purchaseDate || !category) {
-      return res
-        .status(400)
-        .json({ error: "All required fields must be filled" });
+      return res.status(400).json({ error: "All required fields must be filled" });
     }
 
     const db = await connectDB();
     const newPurchase = {
+      userId: req.user.id,
       itemName,
       storeName,
       price: parseFloat(price),
@@ -74,7 +72,6 @@ router.post("/", uploadReceipt.single("receipt"), async (req, res) => {
       category,
       notes: notes || "",
       receiptFile: req.file ? req.file.path : null,
-      receiptPublicId: req.file ? req.file.filename : null,
       createdAt: new Date(),
     };
 
@@ -86,10 +83,9 @@ router.post("/", uploadReceipt.single("receipt"), async (req, res) => {
 });
 
 // PUT update purchase
-router.put("/:id", uploadReceipt.single("receipt"), async (req, res) => {
+router.put("/:id", verifyToken, uploadReceipt.single("receipt"), async (req, res) => {
   try {
-    const { itemName, storeName, price, purchaseDate, category, notes } =
-      req.body;
+    const { itemName, storeName, price, purchaseDate, category, notes } = req.body;
     const db = await connectDB();
 
     const updateData = {
@@ -102,15 +98,12 @@ router.put("/:id", uploadReceipt.single("receipt"), async (req, res) => {
       updatedAt: new Date(),
     };
 
-    if (req.file) {
-      updateData.receiptFile = req.file.path;
-      updateData.receiptPublicId = req.file.filename;
-    }
+    if (req.file) updateData.receiptFile = req.file.path;
 
     const result = await db
       .collection("purchases")
       .updateOne(
-        { _id: new ObjectId(req.params.id) },
+        { _id: new ObjectId(req.params.id), userId: req.user.id },
         { $set: updateData }
       );
 
@@ -123,26 +116,12 @@ router.put("/:id", uploadReceipt.single("receipt"), async (req, res) => {
 });
 
 // DELETE purchase
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", verifyToken, async (req, res) => {
   try {
     const db = await connectDB();
-    const { cloudinary } = require("../db/cloudinary");
-
-    // Delete file from cloudinary if exists
-    const purchase = await db
-      .collection("purchases")
-      .findOne({ _id: new ObjectId(req.params.id) });
-
-    if (purchase && purchase.receiptPublicId) {
-      await cloudinary.uploader.destroy(purchase.receiptPublicId, {
-        resource_type: "auto",
-      });
-    }
-
     const result = await db
       .collection("purchases")
-      .deleteOne({ _id: new ObjectId(req.params.id) });
-
+      .deleteOne({ _id: new ObjectId(req.params.id), userId: req.user.id });
     if (result.deletedCount === 0)
       return res.status(404).json({ error: "Not found" });
     res.json({ message: "Purchase deleted successfully" });
