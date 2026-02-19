@@ -64,7 +64,7 @@ body {
 
 /* Section visibility */
 .section-hidden {
-  display: none;
+  display: none !important;
 }
 
 /* Scrollbar */
@@ -114,4 +114,10 @@ body {
 .toast.error {
   background: #e74c3c;
   color: white;
+}
+
+/* Section padding */
+#wallet-section,
+#support-section {
+  padding: 30px;
 }

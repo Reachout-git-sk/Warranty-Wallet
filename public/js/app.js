@@ -2,30 +2,30 @@
 
 const App = (() => {
 
-  // ---- SHOW SECTION ----
   function showSection(section) {
-    // Hide all sections
-    document.getElementById("wallet-section").classList.add("section-hidden");
-    document.getElementById("support-section").classList.add("section-hidden");
+    const walletSection = document.getElementById("wallet-section");
+    const supportSection = document.getElementById("support-section");
+    const tabWallet = document.getElementById("tab-wallet");
+    const tabSupport = document.getElementById("tab-support");
 
-    // Remove active from all tabs
-    document.getElementById("tab-wallet").classList.remove("active");
-    document.getElementById("tab-support").classList.remove("active");
+    // Hide both first
+    walletSection.classList.add("section-hidden");
+    supportSection.classList.add("section-hidden");
+    tabWallet.classList.remove("active");
+    tabSupport.classList.remove("active");
 
-    // Show selected section and mark tab active
+    // Show selected
     if (section === "wallet") {
-      document.getElementById("wallet-section").classList.remove("section-hidden");
-      document.getElementById("tab-wallet").classList.add("active");
-    } else if (section === "support") {
-      document.getElementById("support-section").classList.remove("section-hidden");
-      document.getElementById("tab-support").classList.add("active");
+      walletSection.classList.remove("section-hidden");
+      tabWallet.classList.add("active");
+    } else {
+      supportSection.classList.remove("section-hidden");
+      tabSupport.classList.add("active");
     }
 
-    // Save last visited tab
     localStorage.setItem("activeTab", section);
   }
 
-  // ---- TOAST NOTIFICATION ----
   function showToast(message, type = "success") {
     const existing = document.querySelector(".toast");
     if (existing) existing.remove();
@@ -42,13 +42,9 @@ const App = (() => {
     }, 3000);
   }
 
-  // ---- INIT ----
   function init() {
-    // Load last visited tab or default to wallet
     const lastTab = localStorage.getItem("activeTab") || "wallet";
     showSection(lastTab);
-
-    // Init both modules
     WalletModule.init();
     SupportModule.init();
   }
@@ -56,5 +52,4 @@ const App = (() => {
   return { init, showSection, showToast };
 })();
 
-// Boot the app
 document.addEventListener("DOMContentLoaded", App.init);
