@@ -158,7 +158,7 @@ const SupportModule = (() => {
 
       <div class="card-actions">
         ${doc.manualFile
-          ? `<a href="/uploads/${doc.manualFile}" target="_blank" class="btn-view-manual">📄 View Manual</a>`
+          ? `<a href="${doc.manualFile}" target="_blank" class="btn-view-manual">📄 View Manual</a>`
           : `<span class="btn-view-manual" style="opacity:0.4;cursor:default;">No Manual</span>`
         }
         <button class="btn-edit-support" onclick="SupportModule.openEditModal('${doc._id}')">✏️ Edit</button>
