@@ -124,11 +124,11 @@ const WalletModule = (() => {
         <td><span class="category-badge ${p.category.toLowerCase()}">${escapeHtml(p.category)}</span></td>
         <td>
           ${p.receiptFile
-            ? `<a href="/uploads/${p.receiptFile}" target="_blank">
-                <img src="/uploads/${p.receiptFile}" class="receipt-thumb" onerror="this.outerHTML='<span class=\\'no-receipt\\'>📄 View</span>'" />
+            ? `<a href="${p.receiptFile}" target="_blank">
+               <img src="${p.receiptFile}" class="receipt-thumb" onerror="this.outerHTML='<span class=\\'no-receipt\\'>📄 View</span>'" />
                </a>`
-            : `<span class="no-receipt">No receipt</span>`
-          }
+        : `<span class="no-receipt">No receipt</span>`
+ }
         </td>
         <td>
           <button class="tbl-btn-edit" onclick="WalletModule.openEditModal('${p._id}')">✏️ Edit</button>

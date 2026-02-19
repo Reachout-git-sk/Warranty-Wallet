@@ -1,31 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const multer = require("multer");
-const path = require("path");
 const { ObjectId } = require("mongodb");
 const connectDB = require("../db/connect");
-
-// Multer storage config for receipt images
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
-
-const upload = multer({
-  storage: storage,
-  fileFilter: function (req, file, cb) {
-    const allowedTypes = /jpeg|jpg|png|pdf/;
-    const ext = allowedTypes.test(
-      path.extname(file.originalname).toLowerCase()
-    );
-    if (ext) return cb(null, true);
-    cb(new Error("Only images and PDFs allowed"));
-  },
-});
+const { uploadReceipt } = require("../db/cloudinary");
 
 // GET all purchases
 router.get("/", async (req, res) => {
@@ -42,7 +19,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET total spending summary
+// GET stats summary — MUST be before /:id
 router.get("/stats/summary", async (req, res) => {
   try {
     const db = await connectDB();
@@ -52,7 +29,11 @@ router.get("/stats/summary", async (req, res) => {
       acc[p.category] = (acc[p.category] || 0) + p.price;
       return acc;
     }, {});
-    res.json({ totalSpent: total.toFixed(2), byCategory, count: purchases.length });
+    res.json({
+      totalSpent: total.toFixed(2),
+      byCategory,
+      count: purchases.length,
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -73,13 +54,15 @@ router.get("/:id", async (req, res) => {
 });
 
 // POST create purchase
-router.post("/", upload.single("receipt"), async (req, res) => {
+router.post("/", uploadReceipt.single("receipt"), async (req, res) => {
   try {
     const { itemName, storeName, price, purchaseDate, category, notes } =
       req.body;
 
     if (!itemName || !storeName || !price || !purchaseDate || !category) {
-      return res.status(400).json({ error: "All required fields must be filled" });
+      return res
+        .status(400)
+        .json({ error: "All required fields must be filled" });
     }
 
     const db = await connectDB();
@@ -90,7 +73,8 @@ router.post("/", upload.single("receipt"), async (req, res) => {
       purchaseDate: new Date(purchaseDate),
       category,
       notes: notes || "",
-      receiptFile: req.file ? req.file.filename : null,
+      receiptFile: req.file ? req.file.path : null,
+      receiptPublicId: req.file ? req.file.filename : null,
       createdAt: new Date(),
     };
 
@@ -102,7 +86,7 @@ router.post("/", upload.single("receipt"), async (req, res) => {
 });
 
 // PUT update purchase
-router.put("/:id", upload.single("receipt"), async (req, res) => {
+router.put("/:id", uploadReceipt.single("receipt"), async (req, res) => {
   try {
     const { itemName, storeName, price, purchaseDate, category, notes } =
       req.body;
@@ -118,11 +102,17 @@ router.put("/:id", upload.single("receipt"), async (req, res) => {
       updatedAt: new Date(),
     };
 
-    if (req.file) updateData.receiptFile = req.file.filename;
+    if (req.file) {
+      updateData.receiptFile = req.file.path;
+      updateData.receiptPublicId = req.file.filename;
+    }
 
     const result = await db
       .collection("purchases")
-      .updateOne({ _id: new ObjectId(req.params.id) }, { $set: updateData });
+      .updateOne(
+        { _id: new ObjectId(req.params.id) },
+        { $set: updateData }
+      );
 
     if (result.matchedCount === 0)
       return res.status(404).json({ error: "Not found" });
@@ -136,9 +126,23 @@ router.put("/:id", upload.single("receipt"), async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const db = await connectDB();
+    const { cloudinary } = require("../db/cloudinary");
+
+    // Delete file from cloudinary if exists
+    const purchase = await db
+      .collection("purchases")
+      .findOne({ _id: new ObjectId(req.params.id) });
+
+    if (purchase && purchase.receiptPublicId) {
+      await cloudinary.uploader.destroy(purchase.receiptPublicId, {
+        resource_type: "auto",
+      });
+    }
+
     const result = await db
       .collection("purchases")
       .deleteOne({ _id: new ObjectId(req.params.id) });
+
     if (result.deletedCount === 0)
       return res.status(404).json({ error: "Not found" });
     res.json({ message: "Purchase deleted successfully" });
@@ -146,7 +150,5 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-
 
 module.exports = router;
