@@ -92,10 +92,10 @@ async function checkWarranties() {
   }
 }
 
-// Start cron job — runs every day at 11:05 PM
+// Start cron job — runs every day at 09:00 AM
 function startReminderJob() {
-  console.log("Warranty reminder job scheduled — runs daily at 11:05 PM");
-  cron.schedule("5 23 * * *", () => {
+  console.log("Warranty reminder job scheduled — runs daily at 09:00 AM");
+  cron.schedule("0 9 * * *", () => {
     console.log("Running warranty reminder check...");
     checkWarranties();
   });
