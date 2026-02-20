@@ -110,7 +110,7 @@ const SettingsModule = (() => {
     } catch (err) {
       showStatus("Failed to send: " + err.message, "error");
     } finally {
-      btn.textContent = "Send Test Email";
+      btn.textContent = "Send Reminder Email";
       btn.disabled = false;
     }
   }

@@ -19,7 +19,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET stats summary — MUST be before /:id
+// GET stats summary
 router.get("/stats/summary", async (req, res) => {
   try {
     const db = await connectDB();
@@ -39,7 +39,7 @@ router.get("/stats/summary", async (req, res) => {
   }
 });
 
-// GET single purchase — MUST be after /stats/summary
+// GET single purchase
 router.get("/:id", async (req, res) => {
   try {
     const db = await connectDB();
@@ -56,8 +56,14 @@ router.get("/:id", async (req, res) => {
 // POST create purchase
 router.post("/", uploadReceipt.single("receipt"), async (req, res) => {
   try {
-    const { itemName, storeName, price, purchaseDate, category, notes } =
-      req.body;
+    const {
+      itemName,
+      storeName,
+      price,
+      purchaseDate,
+      category,
+      notes,
+    } = req.body;
 
     if (!itemName || !storeName || !price || !purchaseDate || !category) {
       return res
@@ -66,6 +72,17 @@ router.post("/", uploadReceipt.single("receipt"), async (req, res) => {
     }
 
     const db = await connectDB();
+
+    const warrantyDate = warrantyExpiry ? new Date(warrantyExpiry) : null;
+    const today = new Date();
+    let warrantyStatus = "No Warranty";
+    if (warrantyDate) {
+      const daysLeft = Math.ceil((warrantyDate - today) / (1000 * 60 * 60 * 24));
+      if (daysLeft <= 0) warrantyStatus = "Expired";
+      else if (daysLeft <= 30) warrantyStatus = "Expiring Soon";
+      else warrantyStatus = "Active";
+    }
+
     const newPurchase = {
       itemName,
       storeName,
@@ -88,9 +105,27 @@ router.post("/", uploadReceipt.single("receipt"), async (req, res) => {
 // PUT update purchase
 router.put("/:id", uploadReceipt.single("receipt"), async (req, res) => {
   try {
-    const { itemName, storeName, price, purchaseDate, category, notes } =
-      req.body;
+    const {
+      itemName,
+      storeName,
+      price,
+      purchaseDate,
+      category,
+      notes,
+      warrantyExpiry,
+    } = req.body;
+
     const db = await connectDB();
+
+    const warrantyDate = warrantyExpiry ? new Date(warrantyExpiry) : null;
+    const today = new Date();
+    let warrantyStatus = "No Warranty";
+    if (warrantyDate) {
+      const daysLeft = Math.ceil((warrantyDate - today) / (1000 * 60 * 60 * 24));
+      if (daysLeft <= 0) warrantyStatus = "Expired";
+      else if (daysLeft <= 30) warrantyStatus = "Expiring Soon";
+      else warrantyStatus = "Active";
+    }
 
     const updateData = {
       itemName,
@@ -99,6 +134,8 @@ router.put("/:id", uploadReceipt.single("receipt"), async (req, res) => {
       purchaseDate: new Date(purchaseDate),
       category,
       notes: notes || "",
+      warrantyExpiry: warrantyDate,
+      warrantyStatus,
       updatedAt: new Date(),
     };
 
