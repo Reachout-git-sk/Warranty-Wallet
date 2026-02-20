@@ -24,7 +24,13 @@ router.post("/", async (req, res) => {
     const db = await connectDB();
     await db.collection("settings").updateOne(
       { key: "notificationEmail" },
-      { $set: { key: "notificationEmail", value: email, updatedAt: new Date() } },
+      {
+        $set: {
+          key: "notificationEmail",
+          value: email,
+          updatedAt: new Date(),
+        },
+      },
       { upsert: true }
     );
 
@@ -34,12 +40,12 @@ router.post("/", async (req, res) => {
   }
 });
 
-// POST test email — sends immediately
+// POST test email — must be before any /:param routes
 router.post("/test", async (req, res) => {
   try {
     const { checkWarranties } = require("../services/reminderJob");
     await checkWarranties();
-    res.json({ message: "Test email sent successfully" });
+    res.json({ message: "Test email triggered successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
