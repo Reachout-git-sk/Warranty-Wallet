@@ -17,11 +17,9 @@ WarrantyWallet is a full-stack web application that helps people organize their 
 
 ## 🎓 Class
 
-**Course:** Web Development — Node.js + Express + MongoDB Project
+**Course:** CS5610 Web Development
 
 **Class Link:** [Click Here](https://johnguerra.co/classes/webDevelopment_online_spring_2026/) 
-
-**Submission Deadline:** Saturday by 2:59 AM
 
 ---
 
@@ -106,22 +104,22 @@ The app is split into two fully independent modules so each team member owns a c
 Warranty-Wallet/
 ├── public/                         # Frontend
 │   ├── css/
-│   │   ├── style.css               # Global styles — Jinam
-│   │   ├── wallet.css              # Wallet styles — Sanket
-│   │   ├── support.css             # Warranty vault styles — Jinam
-│   │   └── settings.css            # Settings modal — Jinam
+│   │   ├── style.css               # Global styles 
+│   │   ├── wallet.css              # Wallet styles 
+│   │   ├── support.css             # Warranty vault styles
+│   │   └── settings.css            # Settings modal 
 │   ├── js/
-│   │   ├── app.js                  # Main router — Jinam
-│   │   ├── wallet.js               # Wallet frontend logic — Sanket
-│   │   ├── support.js              # Warranty vault frontend — Jinam
-│   │   └── settings.js             # Settings frontend — Jinam
+│   │   ├── app.js                  # Main router 
+│   │   ├── wallet.js               # Wallet frontend logic
+│   │   ├── support.js              # Warranty vault frontend 
+│   │   └── settings.js             # Settings frontend 
 │   └── index.html                  # Main HTML file
 ├── routes/
-│   ├── walletRoutes.js             # Purchases CRUD API — Sanket
-│   ├── supportRoutes.js            # Support docs CRUD API — Jinam
-│   └── emailRoutes.js              # Email settings API — Sanket
+│   ├── walletRoutes.js             # Purchases CRUD API
+│   ├── supportRoutes.js            # Support docs CRUD API 
+│   └── emailRoutes.js              # Email settings API 
 ├── services/
-│   └── reminderJob.js              # Daily cron job — Jinam
+│   └── reminderJob.js              # Daily cron job 
 ├── db/
 │   ├── connect.js                  # MongoDB connection
 │   └── cloudinary.js               # Cloudinary config
