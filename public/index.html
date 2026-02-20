@@ -7,21 +7,25 @@
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/wallet.css" />
     <link rel="stylesheet" href="css/support.css" />
+    <link rel="stylesheet" href="css/settings.css" />
   </head>
   <body>
 
     <!-- NAVBAR -->
     <nav class="navbar">
-      <div class="nav-brand">🛡️ WarrantyWallet</div>
-      <div class="nav-tabs">
-        <button class="nav-tab active" id="tab-wallet" onclick="App.showSection('wallet')">
-          🧾 My Wallet
-        </button>
-        <button class="nav-tab" id="tab-support" onclick="App.showSection('support')">
+  <div class="nav-brand">🛡️ WarrantyWallet</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" id="tab-wallet" onclick="App.showSection('wallet')">
+      🧾 My Wallet
+    </button>
+    <button class="nav-tab" id="tab-support" onclick="App.showSection('support')">
           📚 Warranty Vault
-        </button>
-      </div>
-    </nav>
+    </button>
+    <button class="settings-btn" id="settings-btn">
+      ⚙️ Settings
+    </button>
+  </div>
+</nav>
 
     <!-- WALLET SECTION -->
     <section id="wallet-section">
@@ -249,10 +253,47 @@
       </div>
     </div>
 
+    <!-- SETTINGS MODAL -->
+<div class="modal-overlay settings-modal-overlay" id="settings-modal-overlay">
+  <div class="settings-modal-box">
+    <button class="settings-modal-close" id="settings-modal-close">×</button>
+    <h3>⚙️ Email Settings</h3>
+    <p>Set your email to receive warranty expiry reminders automatically every day at 9:00 AM.</p>
+
+    <div class="current-email-display" id="current-email-display">
+      Loading...
+    </div>
+
+    <form class="settings-form" id="settings-form">
+      <div class="form-group">
+        <label for="settings-email-input">Notification Email</label>
+        <input
+          type="email"
+          id="settings-email-input"
+          placeholder="yourname@gmail.com"
+          required
+        />
+      </div>
+
+      <div class="settings-actions">
+        <button type="submit" class="btn-save-email" id="btn-save-email">
+          Save Email
+        </button>
+        <button type="button" class="btn-test-email" id="btn-test-email">
+          Send Test Email
+        </button>
+      </div>
+    </form>
+
+    <div class="email-status" id="email-status"></div>
+  </div>
+</div>
+
     <!-- SCRIPTS -->
     <script src="js/wallet.js"></script>
     <script src="js/support.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/settings.js"></script>
 
   </body>
 </html>

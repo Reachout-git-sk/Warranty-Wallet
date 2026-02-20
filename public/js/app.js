@@ -43,11 +43,12 @@ const App = (() => {
   }
 
   function init() {
-    const lastTab = localStorage.getItem("activeTab") || "wallet";
-    showSection(lastTab);
-    WalletModule.init();
-    SupportModule.init();
-  }
+  const lastTab = localStorage.getItem("activeTab") || "wallet";
+  showSection(lastTab);
+  WalletModule.init();
+  SupportModule.init();
+  SettingsModule.init();
+}
 
   return { init, showSection, showToast };
 })();
