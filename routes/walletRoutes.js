@@ -170,10 +170,20 @@ router.delete("/:id", async (req, res) => {
       .findOne({ _id: new ObjectId(req.params.id) });
 
     if (purchase && purchase.receiptPublicId) {
+  try {
+    // Try deleting as image first
+    const result = await cloudinary.uploader.destroy(purchase.receiptPublicId);
+    // If not found as image, try as raw (PDF)
+    if (result.result === "not found") {
       await cloudinary.uploader.destroy(purchase.receiptPublicId, {
-        resource_type: "auto",
+        resource_type: "raw",
       });
     }
+  } catch (cloudErr) {
+    console.error("Cloudinary delete error:", cloudErr.message);
+    // Continue with MongoDB delete even if Cloudinary fails
+  }
+}
 
     const result = await db
       .collection("purchases")
