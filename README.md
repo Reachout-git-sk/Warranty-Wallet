@@ -65,7 +65,7 @@ WarrantyWallet is a full-stack web application that helps people organize their 
 
 ### Add Warranty Document Modal
 
-![Add Document](docs/images/Warranty_form.png)
+![Add Document](docs/images/warranty_form.png)
 
 ### Email Settings
 
