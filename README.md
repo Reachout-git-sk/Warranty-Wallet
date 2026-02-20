@@ -6,6 +6,16 @@ WarrantyWallet is a full-stack web application that helps people organize their 
 
 ---
 
+## 🌐 Live Demo
+ [🔗 Open WarrantyWallet Live App](https://warranty-wallet-00hr.onrender.com/)
+
+---
+
+## 🎥 YouTube Demo Video
+[📺 Watch Full Project Demo on YouTube](https://youtu.be/3a01h6u5Fxc)
+
+---
+
 ## 👤 Authors
 
 | Member | GitHub | Role |
