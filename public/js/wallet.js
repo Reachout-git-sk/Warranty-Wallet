@@ -110,11 +110,12 @@ const WalletModule = (() => {
         <td>${date}</td>
         <td><span class="category-badge ${p.category.toLowerCase()}">${escapeHtml(p.category)}</span></td>
         <td>
-          ${p.receiptFile
-            ? `<a href="${p.receiptFile}" target="_blank">
+          ${
+            p.receiptFile
+              ? `<a href="${p.receiptFile}" target="_blank">
                <img src="${p.receiptFile}" class="receipt-thumb" onerror="this.outerHTML='<span class=\\'no-receipt\\'>📄 View</span>'" />
                </a>`
-            : `<span class="no-receipt">No receipt</span>`
+              : `<span class="no-receipt">No receipt</span>`
           }
         </td>
         <td>
@@ -139,12 +140,14 @@ const WalletModule = (() => {
       const p = await res.json();
       editingId = id;
 
-      document.getElementById("wallet-modal-title").textContent = "Edit Purchase";
+      document.getElementById("wallet-modal-title").textContent =
+        "Edit Purchase";
       document.getElementById("w-itemName").value = p.itemName;
       document.getElementById("w-storeName").value = p.storeName;
       document.getElementById("w-price").value = p.price;
       document.getElementById("w-purchaseDate").value = new Date(p.purchaseDate)
-        .toISOString().split("T")[0];
+        .toISOString()
+        .split("T")[0];
       document.getElementById("w-category").value = p.category;
       document.getElementById("w-notes").value = p.notes || "";
 
@@ -199,8 +202,12 @@ const WalletModule = (() => {
           method,
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            itemName, storeName, price,
-            purchaseDate, category, notes
+            itemName,
+            storeName,
+            price,
+            purchaseDate,
+            category,
+            notes,
           }),
         });
       }

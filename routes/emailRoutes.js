@@ -1,8 +1,8 @@
-const express = require("express");
-const router = express.Router();
-const connectDB = require("../db/connect");
+import express from "express";
+import connectDB from "../db/connect.js";
 
-// GET current notification email
+const router = express.Router();
+
 router.get("/", async (req, res) => {
   try {
     const db = await connectDB();
@@ -15,7 +15,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// POST save notification email
 router.post("/", async (req, res) => {
   try {
     const { email } = req.body;
@@ -40,15 +39,14 @@ router.post("/", async (req, res) => {
   }
 });
 
-// POST test email — must be before any /:param routes
 router.post("/test", async (req, res) => {
   try {
-    const { checkWarranties } = require("../services/reminderJob");
+    const { checkWarranties } = await import("../services/reminderJob.js");
     await checkWarranties();
-    res.json({ message: "Test email triggered successfully" });
+    res.json({ message: "Reminder email triggered successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-module.exports = router;
+export default router;

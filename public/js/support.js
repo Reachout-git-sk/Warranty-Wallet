@@ -157,9 +157,10 @@ const SupportModule = (() => {
       </div>
 
       <div class="card-actions">
-        ${doc.manualFile
-          ? `<a href="${doc.manualFile}" target="_blank" class="btn-view-manual">📄 View Manual</a>`
-          : `<span class="btn-view-manual" style="opacity:0.4;cursor:default;">No Manual</span>`
+        ${
+          doc.manualFile
+            ? `<a href="${doc.manualFile}" target="_blank" class="btn-view-manual">📄 View Manual</a>`
+            : `<span class="btn-view-manual" style="opacity:0.4;cursor:default;">No Manual</span>`
         }
         <button class="btn-edit-support" onclick="SupportModule.openEditModal('${doc._id}')">✏️ Edit</button>
         <button class="btn-delete-support" onclick="SupportModule.deleteDoc('${doc._id}')">🗑️</button>
@@ -172,7 +173,8 @@ const SupportModule = (() => {
   // ---- OPEN MODAL (ADD) ----
   function openModal() {
     editingId = null;
-    document.getElementById("support-modal-title").textContent = "Add Support Document";
+    document.getElementById("support-modal-title").textContent =
+      "Add Support Document";
     document.getElementById("support-form").reset();
     document.getElementById("support-modal-overlay").classList.add("active");
   }
@@ -184,13 +186,17 @@ const SupportModule = (() => {
       const doc = await res.json();
       editingId = id;
 
-      document.getElementById("support-modal-title").textContent = "Edit Support Document";
+      document.getElementById("support-modal-title").textContent =
+        "Edit Support Document";
       document.getElementById("s-productName").value = doc.productName;
       document.getElementById("s-brand").value = doc.brand;
       document.getElementById("s-supportPhone").value = doc.supportPhone || "";
       document.getElementById("s-supportEmail").value = doc.supportEmail || "";
-      document.getElementById("s-supportWebsite").value = doc.supportWebsite || "";
-      document.getElementById("s-warrantyExpiry").value = new Date(doc.warrantyExpiry)
+      document.getElementById("s-supportWebsite").value =
+        doc.supportWebsite || "";
+      document.getElementById("s-warrantyExpiry").value = new Date(
+        doc.warrantyExpiry
+      )
         .toISOString()
         .split("T")[0];
       document.getElementById("s-notes").value = doc.notes || "";
@@ -212,12 +218,27 @@ const SupportModule = (() => {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append("productName", document.getElementById("s-productName").value.trim());
+    formData.append(
+      "productName",
+      document.getElementById("s-productName").value.trim()
+    );
     formData.append("brand", document.getElementById("s-brand").value.trim());
-    formData.append("supportPhone", document.getElementById("s-supportPhone").value.trim());
-    formData.append("supportEmail", document.getElementById("s-supportEmail").value.trim());
-    formData.append("supportWebsite", document.getElementById("s-supportWebsite").value.trim());
-    formData.append("warrantyExpiry", document.getElementById("s-warrantyExpiry").value);
+    formData.append(
+      "supportPhone",
+      document.getElementById("s-supportPhone").value.trim()
+    );
+    formData.append(
+      "supportEmail",
+      document.getElementById("s-supportEmail").value.trim()
+    );
+    formData.append(
+      "supportWebsite",
+      document.getElementById("s-supportWebsite").value.trim()
+    );
+    formData.append(
+      "warrantyExpiry",
+      document.getElementById("s-warrantyExpiry").value
+    );
     formData.append("notes", document.getElementById("s-notes").value.trim());
 
     const manualFile = document.getElementById("s-manual").files[0];
@@ -249,7 +270,8 @@ const SupportModule = (() => {
 
   // ---- DELETE ----
   async function deleteDoc(id) {
-    if (!confirm("Delete this support document? This cannot be undone.")) return;
+    if (!confirm("Delete this support document? This cannot be undone."))
+      return;
     try {
       const res = await fetch(`${API}/${id}`, { method: "DELETE" });
       const data = await res.json();

@@ -1,10 +1,10 @@
-const express = require("express");
-const router = express.Router();
-const { ObjectId } = require("mongodb");
-const connectDB = require("../db/connect");
-const { uploadReceipt } = require("../db/cloudinary");
+import express from "express";
+import { ObjectId } from "mongodb";
+import connectDB from "../db/connect.js";
+import { uploadReceipt, cloudinary } from "../db/cloudinary.js";
 
-// GET all purchases
+const router = express.Router();
+
 router.get("/", async (req, res) => {
   try {
     const db = await connectDB();
@@ -19,7 +19,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET stats summary
 router.get("/stats/summary", async (req, res) => {
   try {
     const db = await connectDB();
@@ -39,7 +38,6 @@ router.get("/stats/summary", async (req, res) => {
   }
 });
 
-// GET single purchase
 router.get("/:id", async (req, res) => {
   try {
     const db = await connectDB();
@@ -53,7 +51,6 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// POST create purchase
 router.post("/", uploadReceipt.single("receipt"), async (req, res) => {
   try {
     const { itemName, storeName, price, purchaseDate, category, notes } =
@@ -85,7 +82,6 @@ router.post("/", uploadReceipt.single("receipt"), async (req, res) => {
   }
 });
 
-// PUT update purchase
 router.put("/:id", uploadReceipt.single("receipt"), async (req, res) => {
   try {
     const { itemName, storeName, price, purchaseDate, category, notes } =
@@ -109,10 +105,7 @@ router.put("/:id", uploadReceipt.single("receipt"), async (req, res) => {
 
     const result = await db
       .collection("purchases")
-      .updateOne(
-        { _id: new ObjectId(req.params.id) },
-        { $set: updateData }
-      );
+      .updateOne({ _id: new ObjectId(req.params.id) }, { $set: updateData });
 
     if (result.matchedCount === 0)
       return res.status(404).json({ error: "Not found" });
@@ -122,11 +115,9 @@ router.put("/:id", uploadReceipt.single("receipt"), async (req, res) => {
   }
 });
 
-// DELETE purchase
 router.delete("/:id", async (req, res) => {
   try {
     const db = await connectDB();
-    const { cloudinary } = require("../db/cloudinary");
 
     const purchase = await db
       .collection("purchases")
@@ -159,4 +150,4 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

@@ -1,7 +1,6 @@
 // ===== SETTINGS MODULE =====
 
 const SettingsModule = (() => {
-
   function init() {
     loadCurrentEmail();
     bindEvents();
@@ -54,7 +53,9 @@ const SettingsModule = (() => {
   }
 
   function closeModal() {
-    document.getElementById("settings-modal-overlay").classList.remove("active");
+    document
+      .getElementById("settings-modal-overlay")
+      .classList.remove("active");
     clearStatus();
   }
 

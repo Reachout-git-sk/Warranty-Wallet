@@ -3,17 +3,20 @@
   "version": "1.0.0",
   "description": "A full-stack web app to manage product receipts and warranty documents",
   "main": "server.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "lint": "eslint routes/ db/ services/ server.js",
+    "format": "prettier --write routes/ db/ services/ server.js public/js/",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Reachout-git-sk/Warranty-Wallet.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["warranty", "receipts", "node", "express", "mongodb"],
+  "author": "Sanket Kothari and Jinam Shah",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/Reachout-git-sk/Warranty-Wallet/issues"
   },
@@ -28,5 +31,10 @@
     "multer-storage-cloudinary": "^4.0.0",
     "node-cron": "^4.2.1",
     "nodemailer": "^8.0.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.8.1"
   }
 }

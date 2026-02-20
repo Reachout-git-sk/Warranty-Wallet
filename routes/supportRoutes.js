@@ -1,33 +1,10 @@
-const express = require("express");
+import express from "express";
+import { ObjectId } from "mongodb";
+import connectDB from "../db/connect.js";
+import { uploadManual, cloudinary } from "../db/cloudinary.js";
+
 const router = express.Router();
-const multer = require("multer");
-const path = require("path");
-const { ObjectId } = require("mongodb");
-const connectDB = require("../db/connect");
 
-// Multer storage config for PDF manuals
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
-
-const upload = multer({
-  storage: storage,
-  fileFilter: function (req, file, cb) {
-    const allowedTypes = /pdf|jpeg|jpg|png/;
-    const ext = allowedTypes.test(
-      path.extname(file.originalname).toLowerCase()
-    );
-    if (ext) return cb(null, true);
-    cb(new Error("Only PDFs and images allowed"));
-  },
-});
-
-// GET all support docs
 router.get("/", async (req, res) => {
   try {
     const db = await connectDB();
@@ -42,17 +19,22 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET warranty status summary
 router.get("/stats/summary", async (req, res) => {
   try {
     const db = await connectDB();
     const docs = await db.collection("support_docs").find().toArray();
     const today = new Date();
 
-    const active = docs.filter((d) => new Date(d.warrantyExpiry) > today).length;
-    const expired = docs.filter((d) => new Date(d.warrantyExpiry) <= today).length;
+    const active = docs.filter(
+      (d) => new Date(d.warrantyExpiry) > today
+    ).length;
+    const expired = docs.filter(
+      (d) => new Date(d.warrantyExpiry) <= today
+    ).length;
     const expiringSoon = docs.filter((d) => {
-      const days = Math.ceil((new Date(d.warrantyExpiry) - today) / (1000 * 60 * 60 * 24));
+      const days = Math.ceil(
+        (new Date(d.warrantyExpiry) - today) / (1000 * 60 * 60 * 24)
+      );
       return days > 0 && days <= 30;
     }).length;
 
@@ -62,7 +44,6 @@ router.get("/stats/summary", async (req, res) => {
   }
 });
 
-// GET search by brand
 router.get("/search/:brand", async (req, res) => {
   try {
     const db = await connectDB();
@@ -76,7 +57,6 @@ router.get("/search/:brand", async (req, res) => {
   }
 });
 
-// GET single support doc
 router.get("/:id", async (req, res) => {
   try {
     const db = await connectDB();
@@ -90,8 +70,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// POST create support doc
-router.post("/", upload.single("manual"), async (req, res) => {
+router.post("/", uploadManual.single("manual"), async (req, res) => {
   try {
     const {
       productName,
@@ -104,7 +83,9 @@ router.post("/", upload.single("manual"), async (req, res) => {
     } = req.body;
 
     if (!productName || !brand || !warrantyExpiry) {
-      return res.status(400).json({ error: "Product name, brand, and warranty expiry are required" });
+      return res.status(400).json({
+        error: "Product name, brand, and warranty expiry are required",
+      });
     }
 
     const db = await connectDB();
@@ -122,7 +103,8 @@ router.post("/", upload.single("manual"), async (req, res) => {
       daysLeft: daysLeft,
       status: daysLeft > 0 ? "Active" : "Expired",
       notes: notes || "",
-      manualFile: req.file ? req.file.filename : null,
+      manualFile: req.file ? req.file.path : null,
+      manualPublicId: req.file ? req.file.filename : null,
       createdAt: new Date(),
     };
 
@@ -133,8 +115,7 @@ router.post("/", upload.single("manual"), async (req, res) => {
   }
 });
 
-// PUT update support doc
-router.put("/:id", upload.single("manual"), async (req, res) => {
+router.put("/:id", uploadManual.single("manual"), async (req, res) => {
   try {
     const {
       productName,
@@ -164,7 +145,10 @@ router.put("/:id", upload.single("manual"), async (req, res) => {
       updatedAt: new Date(),
     };
 
-    if (req.file) updateData.manualFile = req.file.filename;
+    if (req.file) {
+      updateData.manualFile = req.file.path;
+      updateData.manualPublicId = req.file.filename;
+    }
 
     const result = await db
       .collection("support_docs")
@@ -178,13 +162,33 @@ router.put("/:id", upload.single("manual"), async (req, res) => {
   }
 });
 
-// DELETE support doc
 router.delete("/:id", async (req, res) => {
   try {
     const db = await connectDB();
+
+    const doc = await db
+      .collection("support_docs")
+      .findOne({ _id: new ObjectId(req.params.id) });
+
+    if (doc && doc.manualPublicId) {
+      try {
+        const deleteResult = await cloudinary.uploader.destroy(
+          doc.manualPublicId
+        );
+        if (deleteResult.result === "not found") {
+          await cloudinary.uploader.destroy(doc.manualPublicId, {
+            resource_type: "raw",
+          });
+        }
+      } catch (cloudErr) {
+        console.error("Cloudinary delete error:", cloudErr.message);
+      }
+    }
+
     const result = await db
       .collection("support_docs")
       .deleteOne({ _id: new ObjectId(req.params.id) });
+
     if (result.deletedCount === 0)
       return res.status(404).json({ error: "Not found" });
     res.json({ message: "Support doc deleted successfully" });
@@ -193,4 +197,4 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

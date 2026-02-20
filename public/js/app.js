@@ -1,7 +1,6 @@
 // ===== APP.JS — MAIN ROUTER =====
 
 const App = (() => {
-
   function showSection(section) {
     const walletSection = document.getElementById("wallet-section");
     const supportSection = document.getElementById("support-section");
@@ -43,12 +42,12 @@ const App = (() => {
   }
 
   function init() {
-  const lastTab = localStorage.getItem("activeTab") || "wallet";
-  showSection(lastTab);
-  WalletModule.init();
-  SupportModule.init();
-  SettingsModule.init();
-}
+    const lastTab = localStorage.getItem("activeTab") || "wallet";
+    showSection(lastTab);
+    WalletModule.init();
+    SupportModule.init();
+    SettingsModule.init();
+  }
 
   return { init, showSection, showToast };
 })();
