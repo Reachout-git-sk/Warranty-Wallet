@@ -248,12 +248,43 @@ npx prettier --write routes/ db/ services/ server.js public/js/
 
 ---
 
+## 🗄️ MongoDB Atlas Setup
+
+1. Go to [https://www.mongodb.com/cloud/atlas](https://www.mongodb.com/cloud/atlas) and create a free account
+2. Click **"Create"** → Select the **Free** tier (M0 Sandbox) → Choose any cloud provider → Click **"Create Cluster"**
+3. Go to **Database Access** → Click **"Add New Database User"**
+   - Set a username and password (letters and numbers only — avoid special characters)
+   - Set permission to **"Read and write to any database"**
+4. Go to **Network Access** → Click **"Add IP Address"** → Select **"Allow Access from Anywhere"** (`0.0.0.0/0`)
+5. Go to **Database** → Click **"Connect"** → Select **"Drivers"** → Copy the connection string
+6. Replace `<username>` and `<password>` in the string with your actual credentials, and append the database name:
+```
+MONGO_URI=mongodb+srv://yourUsername:yourPassword@cluster0.xxxxx.mongodb.net/warrantyWallet?retryWrites=true&w=majority
+```
+
+---
+
+## ☁️ Cloudinary Setup
+
+1. Go to [https://cloudinary.com](https://cloudinary.com) and sign up for a free account
+2. After logging in, go to your **Dashboard** (home page)
+3. You will see all three required values on the dashboard:
+   - **Cloud Name** → paste as `CLOUDINARY_CLOUD_NAME` in `.env`
+   - **API Key** → paste as `CLOUDINARY_API_KEY` in `.env`
+   - **API Secret** (click the eye icon to reveal) → paste as `CLOUDINARY_API_SECRET` in `.env`
+
+---
+
 ## 📧 Gmail App Password Setup
+
 1. Go to `myaccount.google.com`
 2. Security → Enable **2-Step Verification**
 3. Security → **App Passwords**
-4. Select Mail → Generate
-5. Copy 16-character password → paste as `EMAIL_PASS` in `.env`
+4. Enter any app name (e.g. `WarrantyWallet`) → Click **"Create"**
+5. Copy the 16-character password shown → paste as `EMAIL_PASS` in `.env`
+6. Paste your Gmail address as `EMAIL_USER` in `.env`
+
+> **Note:** This is not your regular Gmail password. You must use the generated App Password.
 
 ---
 
