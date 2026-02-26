@@ -131,6 +131,9 @@ const WalletModule = (() => {
     editingId = null;
     document.getElementById("wallet-modal-title").textContent = "Add Purchase";
     document.getElementById("wallet-form").reset();
+    document.getElementById("w-purchaseDate").max = new Date()
+      .toISOString()
+      .split("T")[0];
     document.getElementById("wallet-modal-overlay").classList.add("active");
   }
 
@@ -146,6 +149,9 @@ const WalletModule = (() => {
       document.getElementById("w-storeName").value = p.storeName;
       document.getElementById("w-price").value = p.price;
       document.getElementById("w-purchaseDate").value = new Date(p.purchaseDate)
+        .toISOString()
+        .split("T")[0];
+      document.getElementById("w-purchaseDate").max = new Date()
         .toISOString()
         .split("T")[0];
       document.getElementById("w-category").value = p.category;
@@ -175,6 +181,12 @@ const WalletModule = (() => {
 
     if (!itemName || !storeName || !price || !purchaseDate || !category) {
       alert("Please fill all required fields.");
+      return;
+    }
+
+    const today = new Date().toISOString().split("T")[0];
+    if (purchaseDate > today) {
+      alert("Purchase date cannot be in the future.");
       return;
     }
 
